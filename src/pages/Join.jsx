@@ -1,13 +1,16 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/userReducer';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box, Container, Grid, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
 import '../firebase';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { set, ref, getDatabase } from 'firebase/database';
 import md5 from 'md5';
-import { Link } from 'react-router-dom';
 
 function Join() {
+  const dispatch = useDispatch();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +56,12 @@ function Join() {
         photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
       });
 
-      await set(ref(getDatabase(), 'users/' + user.uid), { name: user.displayName, avatar: user.photoURL });
+      await set(ref(getDatabase(), 'users/' + user.uid), {
+        name: user.displayName,
+        avatar: user.photoURL,
+      });
+
+      dispatch(setUser(user));
     } catch (e) {
       setError(e.message);
       setLoading(false);
