@@ -80,7 +80,7 @@ function Join() {
               <TextField name="email" required fullWidth label="이메일" autoComplete="off" autoFocus />
             </Grid>
             <Grid item xs={12}>
-              <TextField name="name" required fullWidth label="이름" />
+              <TextField name="name" required fullWidth label="이름" autoComplete="off" />
             </Grid>
             <Grid item xs={12}>
               <TextField name="password" required fullWidth label="비밀번호" type="password" />
