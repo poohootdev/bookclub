@@ -7,10 +7,11 @@ import './App.css';
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
+import { CircularProgress, Stack } from '@mui/material';
 
 function App() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { isLoading, currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
@@ -22,6 +23,14 @@ function App() {
     });
     return () => unsubscribe();
   }, [dispatch]);
+
+  if (isLoading) {
+    return (
+      <Stack alignItems="center" justifyContent="center" height="100vh">
+        <CircularProgress size={150} />
+      </Stack>
+    );
+  }
 
   return (
     <Routes>
