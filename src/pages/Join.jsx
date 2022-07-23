@@ -80,7 +80,10 @@ function Join() {
         }}
       >
         <Typography component="h1" variant="h5">
-          📋 회원가입
+          📋
+        </Typography>
+        <Typography component="h1" variant="h5">
+          회원가입
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -115,7 +118,7 @@ function Join() {
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link to="/login" style={{ textDecoration: 'none', color: 'blue' }}>
-                로그인으로 이동
+                로그인
               </Link>
             </Grid>
           </Grid>
