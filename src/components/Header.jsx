@@ -21,17 +21,17 @@ function Header() {
     <>
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#9A939B', backgroundColor: '#4c3c4c' }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#FFFDFF', backgroundColor: '#F7971C' }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
           <Box sx={{ display: 'flex' }}>
             <Typography variant="h6" component="div">
-              BookClub
+              웅진북클럽
             </Typography>
           </Box>
           <Box>
             <IconButton onClick={handleOpenMenu}>
-              <Typography variant="h6" component="div" sx={{ color: '#9A939B' }}>
+              <Typography variant="h6" component="div" sx={{ color: '#FFFDFF' }}>
                 {user.currentUser?.displayName}
               </Typography>
               <Avatar sx={{ marginLeft: '10px' }} alt="profileImage" src={user.currentUser?.photoURL} />
