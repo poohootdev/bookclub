@@ -1,21 +1,32 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AppBar, Avatar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import '../firebase';
 import { signOut, getAuth } from 'firebase/auth';
+import ProfileModal from './modal/ProfileModal';
 
 function Header() {
   const { user } = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const handleCloseMenu = () => setAnchorEl(null);
+  const handleClickOpen = useCallback(() => {
+    setShowProfileModal(true);
+    handleCloseMenu();
+  }, [handleCloseMenu]);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleCloseMenu = () => setAnchorEl(null);
   const handleLogout = async () => {
     await signOut(getAuth());
   };
+
+  const handleCloseProfileModal = useCallback(() => {
+    setShowProfileModal(false);
+  }, []);
 
   return (
     <>
@@ -43,8 +54,8 @@ function Header() {
               onClose={handleCloseMenu}
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              <MenuItem>
-                <Typography textAlign="center">프로필 이미지(미구현)</Typography>
+              <MenuItem onClick={handleClickOpen}>
+                <Typography textAlign="center">프로필 이미지</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">로그아웃</Typography>
@@ -53,6 +64,7 @@ function Header() {
           </Box>
         </Toolbar>
       </AppBar>
+      <ProfileModal open={showProfileModal} handleClose={handleCloseProfileModal} />
     </>
   );
 }
