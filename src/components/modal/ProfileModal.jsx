@@ -1,13 +1,27 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Input, Stack, Button } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
+import { useSelector } from 'react-redux';
+import '../../firebase';
+import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
+import { getDatabase, ref, update } from 'firebase/database';
+import { updateProfile } from 'firebase/auth';
 
 function ProfileModal({ open, handleClose }) {
+  const { user } = useSelector((state) => state);
   const [previewImage, setPreviewImage] = useState('');
   const [croppedImage, setCroppedImage] = useState('');
-  //   const [blob, setBolb] = useState('');
+  const [uploadedCroppedImage, setUploadedCroppedImage] = useState('');
+  const [blob, setBolb] = useState('');
   const avatarEditorRef = useRef(null);
+
+  const closeModal = useCallback(() => {
+    handleClose();
+    setPreviewImage('');
+    setCroppedImage('');
+    setUploadedCroppedImage('');
+  }, [handleClose]);
 
   const handleChange = useCallback((e) => {
     const file = e.target.files[0];
@@ -23,12 +37,37 @@ function ProfileModal({ open, handleClose }) {
     avatarEditorRef.current.getImageScaledToCanvas().toBlob((blob) => {
       const imageUrl = URL.createObjectURL(blob);
       setCroppedImage(imageUrl);
-      //   setBolb(blob);
+      setBolb(blob);
     });
   }, []);
 
+  const uploadCroppedImage = useCallback(async () => {
+    if (!user.currentUser?.uid) return;
+    const storageRef = refStorage(getStorage(), `avatars/users/${user.currentUser.uid}`);
+    const uploadTask = await uploadBytes(storageRef, blob);
+    const downloadUrl = await getDownloadURL(uploadTask.ref);
+    setUploadedCroppedImage(downloadUrl);
+  }, [blob, user.currentUser?.uid]);
+
+  useEffect(() => {
+    if (!uploadedCroppedImage || !user.currentUser) return;
+    async function changeAvatar() {
+      await updateProfile(user.currentUser, {
+        photoURL: uploadedCroppedImage,
+      });
+
+      const newData = { avatar: uploadedCroppedImage };
+      const updates = {};
+      updates['/users/' + user.currentUser.uid] = newData;
+      await update(ref(getDatabase()), updates);
+
+      closeModal();
+    }
+    changeAvatar();
+  }, [uploadedCroppedImage, user.currentUser, closeModal]);
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={closeModal}>
       <DialogTitle>⚙️프로필 이미지 변경</DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={3}>
@@ -59,7 +98,7 @@ function ProfileModal({ open, handleClose }) {
       <DialogActions>
         <Button>취소</Button>
         {previewImage && <Button onClick={handleCropImage}>이미지 자르기</Button>}
-        {croppedImage && <Button>저장</Button>}
+        {croppedImage && <Button onClick={uploadCroppedImage}>저장</Button>}
       </DialogActions>
     </Dialog>
   );
