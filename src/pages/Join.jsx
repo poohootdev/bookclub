@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/userReducer';
@@ -14,59 +14,65 @@ function Join() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const name = data.get('name');
-    const password = data.get('password');
-    const passwordConfirm = data.get('passwordConfirm');
+      const data = new FormData(event.currentTarget);
+      const email = data.get('email');
+      const name = data.get('name');
+      const password = data.get('password');
+      const passwordConfirm = data.get('passwordConfirm');
 
-    if (typeof email !== 'string') return;
-    if (typeof name !== 'string') return;
-    if (typeof password !== 'string') return;
-    if (typeof passwordConfirm !== 'string') return;
+      if (typeof email !== 'string') return;
+      if (typeof name !== 'string') return;
+      if (typeof password !== 'string') return;
+      if (typeof passwordConfirm !== 'string') return;
 
-    if (!email || !name || !password || !passwordConfirm) {
-      setError('모든 항목을 입력해 주세요.');
-      return;
-    }
+      if (!email || !name || !password || !passwordConfirm) {
+        setError('모든 항목을 입력해 주세요.');
+        return;
+      }
 
-    if (password !== passwordConfirm) {
-      setError('비밀번호가 같지 않습니다.');
-      return;
-    }
+      if (password !== passwordConfirm) {
+        setError('비밀번호가 같지 않습니다.');
+        return;
+      }
 
-    if (password.length < 6 || passwordConfirm.length < 6) {
-      setError('비밀번호는 6글자 이상이어야 합니다.');
-      return;
-    }
+      if (password.length < 6 || passwordConfirm.length < 6) {
+        setError('비밀번호는 6글자 이상이어야 합니다.');
+        return;
+      }
 
-    postUserData(email, name, password);
-  };
+      postUserData(email, name, password);
+    },
+    [postUserData],
+  );
 
-  const postUserData = async (email, name, password) => {
-    setLoading(true);
+  const postUserData = useCallback(
+    async (email, name, password) => {
+      setLoading(true);
 
-    try {
-      const { user } = await createUserWithEmailAndPassword(getAuth(), email, password);
-      await updateProfile(user, {
-        displayName: name,
-        photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
-      });
+      try {
+        const { user } = await createUserWithEmailAndPassword(getAuth(), email, password);
+        await updateProfile(user, {
+          displayName: name,
+          photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
+        });
 
-      await set(ref(getDatabase(), 'users/' + user.uid), {
-        name: user.displayName,
-        avatar: user.photoURL,
-      });
+        await set(ref(getDatabase(), 'users/' + user.uid), {
+          name: user.displayName,
+          avatar: user.photoURL,
+        });
 
-      dispatch(setUser(user));
-    } catch (e) {
-      setError(e.message);
-      setLoading(false);
-    }
-  };
+        dispatch(setUser(user));
+      } catch (e) {
+        setError(e.message);
+        setLoading(false);
+      }
+    },
+    [dispatch],
+  );
 
   return (
     <Container component="main" maxWidth="xs">

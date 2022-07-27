@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box, Container, Grid, TextField, Typography } from '@mui/material';
@@ -9,23 +9,26 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
+      const data = new FormData(event.currentTarget);
+      const email = data.get('email');
+      const password = data.get('password');
 
-    if (typeof email !== 'string') return;
-    if (typeof password !== 'string') return;
+      if (typeof email !== 'string') return;
+      if (typeof password !== 'string') return;
 
-    if (!email || !password) {
-      setError('모든 항목을 입력해 주세요.');
-      return;
-    }
+      if (!email || !password) {
+        setError('모든 항목을 입력해 주세요.');
+        return;
+      }
 
-    loginUser(email, password);
-  };
+      loginUser(email, password);
+    },
+    [loginUser],
+  );
 
   const loginUser = async (email, password) => {
     setLoading(true);

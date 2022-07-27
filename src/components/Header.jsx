@@ -10,19 +10,22 @@ function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  const handleCloseMenu = () => setAnchorEl(null);
+  const handleCloseMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
   const handleClickOpen = useCallback(() => {
     setShowProfileModal(true);
     handleCloseMenu();
   }, [handleCloseMenu]);
 
-  const handleOpenMenu = (event) => {
+  const handleOpenMenu = useCallback((event) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await signOut(getAuth());
-  };
+  }, []);
 
   const handleCloseProfileModal = useCallback(() => {
     setShowProfileModal(false);
