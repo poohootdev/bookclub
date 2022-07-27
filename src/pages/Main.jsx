@@ -20,7 +20,7 @@ function Main() {
               <Typography gutterBottom variant="h5" component="div">
                 웅진북클럽 100권 읽기 운동
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="secondary">
                 <b>100권 읽기 운동</b>으로 아이들의 꿈, 갖고 싶은 선물 등 다양한 동기를 부여하여 목표에 도달해 보세요!
               </Typography>
             </CardContent>

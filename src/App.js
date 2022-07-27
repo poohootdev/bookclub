@@ -9,10 +9,24 @@ import Login from './pages/Login';
 import Join from './pages/Join';
 import Read100 from './pages/Read100';
 import { CircularProgress, Stack } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function App() {
   const dispatch = useDispatch();
   const { isLoading, currentUser } = useSelector((state) => state.user);
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#F7971C',
+        contrastText: '#fff',
+      },
+      secondary: {
+        main: '#807d78',
+        contrastText: '#fff',
+      },
+    },
+  });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
@@ -27,19 +41,23 @@ function App() {
 
   if (isLoading) {
     return (
-      <Stack alignItems="center" justifyContent="center" height="100vh">
-        <CircularProgress size={150} />
-      </Stack>
+      <ThemeProvider theme={theme}>
+        <Stack alignItems="center" justifyContent="center" height="100vh">
+          <CircularProgress size={150} color="primary" />
+        </Stack>
+      </ThemeProvider>
     );
   }
 
   return (
-    <Routes>
-      <Route path="/" element={currentUser ? <Main /> : <Navigate to="/login" />}></Route>
-      <Route path="/read100" element={currentUser ? <Read100 /> : <Navigate to="/login" />}></Route>
-      <Route path="/login" element={currentUser ? <Navigate to="/" /> : <Login />}></Route>
-      <Route path="/join" element={currentUser ? <Navigate to="/" /> : <Join />}></Route>
-    </Routes>
+    <ThemeProvider theme={theme}>
+      <Routes>
+        <Route path="/" element={currentUser ? <Main /> : <Navigate to="/login" />}></Route>
+        <Route path="/read100" element={currentUser ? <Read100 /> : <Navigate to="/login" />}></Route>
+        <Route path="/login" element={currentUser ? <Navigate to="/" /> : <Login />}></Route>
+        <Route path="/join" element={currentUser ? <Navigate to="/" /> : <Join />}></Route>
+      </Routes>
+    </ThemeProvider>
   );
 }
 

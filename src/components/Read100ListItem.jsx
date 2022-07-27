@@ -27,7 +27,7 @@ function Read100ListItem() {
       />
       <CardMedia component="img" height="194" image="https://picsum.photos/400/400/?random" alt="Paella dish" />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="secondary">
           이제 시작이에요~ ^^
         </Typography>
       </CardContent>

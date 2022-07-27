@@ -33,10 +33,7 @@ function Header() {
 
   return (
     <>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: '#FFFDFF', backgroundColor: '#F7971C' }}
-      >
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} color="primary">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', height: '50px' }}>
           <Box sx={{ display: 'flex' }}>
             <Typography variant="h6" component="div">
@@ -45,7 +42,7 @@ function Header() {
           </Box>
           <Box>
             <IconButton onClick={handleOpenMenu}>
-              <Typography variant="h6" component="div" sx={{ color: '#FFFDFF' }}>
+              <Typography variant="h6" component="div" sx={{ color: '#fff' }}>
                 {user.currentUser?.displayName}
               </Typography>
               <Avatar sx={{ marginLeft: '10px' }} alt="profileImage" src={user.currentUser?.photoURL} />
