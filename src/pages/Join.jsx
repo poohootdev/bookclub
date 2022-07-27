@@ -14,6 +14,31 @@ function Join() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const postUserData = useCallback(
+    async (email, name, password) => {
+      setLoading(true);
+
+      try {
+        const { user } = await createUserWithEmailAndPassword(getAuth(), email, password);
+        await updateProfile(user, {
+          displayName: name,
+          photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
+        });
+
+        await set(ref(getDatabase(), 'users/' + user.uid), {
+          name: user.displayName,
+          avatar: user.photoURL,
+        });
+
+        dispatch(setUser(user));
+      } catch (e) {
+        setError(e.message);
+        setLoading(false);
+      }
+    },
+    [dispatch],
+  );
+
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
@@ -47,31 +72,6 @@ function Join() {
       postUserData(email, name, password);
     },
     [postUserData],
-  );
-
-  const postUserData = useCallback(
-    async (email, name, password) => {
-      setLoading(true);
-
-      try {
-        const { user } = await createUserWithEmailAndPassword(getAuth(), email, password);
-        await updateProfile(user, {
-          displayName: name,
-          photoURL: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
-        });
-
-        await set(ref(getDatabase(), 'users/' + user.uid), {
-          name: user.displayName,
-          avatar: user.photoURL,
-        });
-
-        dispatch(setUser(user));
-      } catch (e) {
-        setError(e.message);
-        setLoading(false);
-      }
-    },
-    [dispatch],
   );
 
   return (

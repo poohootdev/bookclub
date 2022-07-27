@@ -9,6 +9,17 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const loginUser = useCallback(async (email, password) => {
+    setLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(getAuth(), email, password);
+    } catch (e) {
+      setError(e.message);
+      setLoading(false);
+    }
+  }, []);
+
   const handleSubmit = useCallback(
     (event) => {
       event.preventDefault();
@@ -29,17 +40,6 @@ function Login() {
     },
     [loginUser],
   );
-
-  const loginUser = async (email, password) => {
-    setLoading(true);
-
-    try {
-      await signInWithEmailAndPassword(getAuth(), email, password);
-    } catch (e) {
-      setError(e.message);
-      setLoading(false);
-    }
-  };
 
   return (
     <Container component="main" maxWidth="xs">
