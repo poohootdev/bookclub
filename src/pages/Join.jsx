@@ -107,10 +107,25 @@ function Join() {
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <p>[필수] 계정 정보</p>
-              <TextField name="email" required fullWidth label="이메일" autoComplete="off" autoFocus />
+              <TextField
+                name="email"
+                required
+                fullWidth
+                label="이메일"
+                autoComplete="off"
+                autoFocus
+                placeholder="example@gmail.com"
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField name="password" required fullWidth label="비밀번호" type="password" />
+              <TextField
+                name="password"
+                required
+                fullWidth
+                label="비밀번호"
+                type="password"
+                placeholder="6글자이상 입력해 주세요."
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -119,7 +134,7 @@ function Join() {
                 fullWidth
                 label="비밀번호 확인"
                 type="password"
-                helperText="비밀번호는 6글자 이상 입력해 주세요."
+                placeholder="6글자이상 입력해 주세요."
               />
             </Grid>
             <Grid item xs={12}>
@@ -129,16 +144,24 @@ function Join() {
                 fullWidth
                 label="계정 이름"
                 autoComplete="off"
+                placeholder="망고엄마"
                 helperText="게시물에 표시되는 내 계정 이름으로, 자유롭게 입력해 주세요."
               />
             </Grid>
 
             <Grid item xs={12}>
               <p>[필수] 기본 정보 (실제 이름으로 입력해 주세요.)</p>
-              <TextField name="realName" required fullWidth label="본인 이름" autoComplete="off" />
+              <TextField name="realName" required fullWidth label="본인 이름" autoComplete="off" placeholder="차범근" />
             </Grid>
             <Grid item xs={12}>
-              <TextField name="realChildName" required fullWidth label="자녀 이름" autoComplete="off" />
+              <TextField
+                name="realChildName"
+                required
+                fullWidth
+                label="자녀 이름"
+                autoComplete="off"
+                placeholder="차두리"
+              />
             </Grid>
           </Grid>
           {error ? (
