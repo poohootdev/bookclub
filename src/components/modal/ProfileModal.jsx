@@ -95,7 +95,7 @@ function ProfileModal({ open, handleClose }) {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button>취소</Button>
+        <Button onClick={closeModal}>취소</Button>
         {previewImage && <Button onClick={handleCropImage}>이미지 자르기</Button>}
         {croppedImage && <Button onClick={uploadCroppedImage}>저장</Button>}
       </DialogActions>
