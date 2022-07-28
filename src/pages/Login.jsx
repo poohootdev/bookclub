@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
-import { Alert, Box, Container, Grid, TextField, Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import { Alert, Box, Container, Grid, TextField, Typography, Button } from '@mui/material';
 import '../firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -58,6 +60,10 @@ function Login() {
         <Typography component="h1" variant="h5">
           로그인
         </Typography>
+        <Card sx={{ mt: 3, width: 400 }}>
+          <CardMedia component="img" height="252" image="/images/con_brand01_4_slide-1-3.png" />
+        </Card>
+
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField margin="normal" name="email" required fullWidth label="이메일" autoComplete="off" autoFocus />
           <TextField margin="normal" name="password" required fullWidth label="비밀번호" type="password" />
@@ -78,8 +84,10 @@ function Login() {
           </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to="/join" style={{ textDecoration: 'none', color: 'blue' }}>
-                회원가입
+              <Link to="/join" style={{ textDecoration: 'none' }}>
+                <Button variant="text" size="large" color="secondary">
+                  📋 회원가입
+                </Button>
               </Link>
             </Grid>
           </Grid>
