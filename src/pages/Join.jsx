@@ -17,7 +17,7 @@ function Join() {
   const [loading, setLoading] = useState(false);
 
   const postUserData = useCallback(
-    async (email, name, password) => {
+    async (email, password, name, realName, realChildName) => {
       setLoading(true);
 
       try {
@@ -30,6 +30,8 @@ function Join() {
         await set(ref(getDatabase(), 'users/' + user.uid), {
           name: user.displayName,
           avatar: user.photoURL,
+          realName: realName,
+          realChildName: realChildName,
         });
 
         dispatch(setUser(user));
@@ -75,7 +77,7 @@ function Join() {
         return;
       }
 
-      postUserData(email, name, password);
+      postUserData(email, password, name, realName, realChildName);
     },
     [postUserData],
   );
