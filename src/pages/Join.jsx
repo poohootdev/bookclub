@@ -142,10 +142,10 @@ function Join() {
                 name="name"
                 required
                 fullWidth
-                label="계정 이름"
+                label="닉네임"
                 autoComplete="off"
                 placeholder="망고엄마"
-                helperText="게시물에 표시되는 내 계정 이름으로, 자유롭게 입력해 주세요."
+                helperText="게시물에 표시되는 나의 별명으로, 자유롭게 입력해 주세요."
               />
             </Grid>
 

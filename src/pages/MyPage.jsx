@@ -66,7 +66,7 @@ function MyPage() {
               <Typography>{user.currentUser?.email}</Typography>
             </Grid>
             <Grid item xs={4}>
-              <Typography>계정 이름</Typography>
+              <Typography>닉네임</Typography>
             </Grid>
             <Grid item xs={8}>
               <Typography> {user.currentUser?.displayName}</Typography>
