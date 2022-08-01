@@ -32,6 +32,11 @@ function Join() {
           avatar: user.photoURL,
           realName: realName,
           realChildName: realChildName,
+          eventChallenge: {
+            start: false,
+            count: 3,
+            countMax: 3,
+          },
         });
 
         dispatch(setUser(user));
