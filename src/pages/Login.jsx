@@ -65,8 +65,25 @@ function Login() {
         </Card>
 
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField margin="normal" name="email" required fullWidth label="이메일" autoComplete="off" autoFocus />
-          <TextField margin="normal" name="password" required fullWidth label="비밀번호" type="password" />
+          <TextField
+            margin="normal"
+            name="email"
+            required
+            fullWidth
+            label="이메일"
+            autoComplete="off"
+            autoFocus
+            placeholder="example@gmail.com"
+          />
+          <TextField
+            margin="normal"
+            name="password"
+            required
+            fullWidth
+            label="비밀번호"
+            type="password"
+            placeholder="비밀번호를 입력해 주세요."
+          />
           {error ? (
             <Alert sx={{ mt: 3 }} severity="error">
               {error}
