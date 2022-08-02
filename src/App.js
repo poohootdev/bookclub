@@ -26,6 +26,9 @@ function App() {
         main: '#807d78',
         contrastText: '#fff',
       },
+      disabled: {
+        main: '#ebe8e2',
+      },
     },
   });
 

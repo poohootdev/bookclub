@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Container, Box } from '@mui/material';
+import { Container, Box, Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -9,6 +9,9 @@ import { LoadingButton } from '@mui/lab';
 import Header from '../components/Header';
 import '../firebase';
 import { get, child, ref, getDatabase, update } from 'firebase/database';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 function Main() {
   const { user } = useSelector((state) => state);
@@ -18,6 +21,17 @@ function Main() {
   const [challengeStart, setChallengeStart] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  let items = [];
+  for (let i = 1; i <= 100; i++) {
+    items.push(i);
+  }
+
+  const itemsList = items.map((value) => (
+    <Grid key={value} item textAlign="center">
+      <CheckCircleIcon sx={{ mt: -1 }} color="disabled" />
+    </Grid>
+  ));
 
   useEffect(() => {
     if (!user.currentUser) return;
@@ -45,10 +59,18 @@ function Main() {
 
   if (challengeStart === true) {
     return (
-      <Container component="main" maxWidth="xs">
+      <Container component="main">
         <Box sx={{ display: 'flex', backgroundColor: 'white' }}>
           <Header />
         </Box>
+        <Box sx={{ mt: 10 }}>
+          <Grid container rowSpacing={1}>
+            {itemsList}
+          </Grid>
+        </Box>
+        <Fab color="primary" aria-label="add" sx={{ position: 'absolute', bottom: 20, right: 20 }}>
+          <AddIcon />
+        </Fab>
       </Container>
     );
   }
