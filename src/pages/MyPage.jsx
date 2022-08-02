@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { LoadingButton } from '@mui/lab';
 import { Stack, IconButton, Box, Container, Grid, Avatar, Typography } from '@mui/material';
 import Badge from '@mui/material/Badge';
@@ -9,14 +9,9 @@ import { signOut, getAuth } from 'firebase/auth';
 import ProfileModal from '../components/modal/ProfileModal';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { get, child, ref, getDatabase } from 'firebase/database';
 
 function MyPage() {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state);
-
-  const [realName, setRealName] = useState('');
-  const [realChildName, setRealChildName] = useState('');
+  const { user, userDetail } = useSelector((state) => state);
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const handleClickOpen = useCallback(() => {
@@ -30,16 +25,6 @@ function MyPage() {
   const handleLogout = useCallback(async () => {
     await signOut(getAuth());
   }, []);
-
-  useEffect(() => {
-    if (!user.currentUser) return;
-    async function getMyInfo() {
-      const snapShot = await get(child(ref(getDatabase()), 'users/' + user.currentUser.uid));
-      setRealName(snapShot.val().realName);
-      setRealChildName(snapShot.val().realChildName);
-    }
-    getMyInfo();
-  }, [user.currentUser, dispatch]);
 
   return (
     <>
@@ -88,13 +73,13 @@ function MyPage() {
               <Typography>본인 이름</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography>{realName}</Typography>
+              <Typography>{userDetail.currentUserDetail.realName}</Typography>
             </Grid>
             <Grid item xs={4}>
               <Typography>자녀 이름</Typography>
             </Grid>
             <Grid item xs={8}>
-              <Typography>{realChildName}</Typography>
+              <Typography>{userDetail.currentUserDetail.realChildName}</Typography>
             </Grid>
           </Grid>
 

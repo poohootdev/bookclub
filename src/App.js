@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser } from './store/userReducer';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -11,6 +11,9 @@ import Challenge from './pages/Challenge';
 import MyPage from './pages/MyPage';
 import { CircularProgress, Stack } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import '../src/firebase';
+import { get, child, ref, getDatabase } from 'firebase/database';
+import { setUserDetail, clearUserDetail } from './store/userDetailReducer';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,16 +35,32 @@ function App() {
     },
   });
 
+  const getMyInfo = useCallback(
+    async (uid) => {
+      const snapShot = await get(child(ref(getDatabase()), 'users/' + uid));
+
+      dispatch(
+        setUserDetail({
+          realName: snapShot.val().realName,
+          realChildName: snapShot.val().realChildName,
+        }),
+      );
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
       if (user) {
         dispatch(setUser(user));
+        getMyInfo(user.uid);
       } else {
         dispatch(clearUser());
+        dispatch(clearUserDetail());
       }
     });
     return () => unsubscribe();
-  }, [dispatch]);
+  }, [dispatch, getMyInfo]);
 
   if (isLoading) {
     return (
