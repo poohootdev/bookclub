@@ -43,6 +43,7 @@ function App() {
         setUserDetail({
           realName: snapShot.val().realName,
           realChildName: snapShot.val().realChildName,
+          eventChallenge: snapShot.val().eventChallenge,
         }),
       );
     },

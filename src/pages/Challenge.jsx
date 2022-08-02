@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Box, Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -8,17 +8,16 @@ import Typography from '@mui/material/Typography';
 import { LoadingButton } from '@mui/lab';
 import Header from '../components/Header';
 import '../firebase';
-import { get, child, ref, getDatabase, update } from 'firebase/database';
+import { ref, getDatabase, update } from 'firebase/database';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { setUserDetail } from '../store/userDetailReducer';
 
 function Challenge() {
-  const { user } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
-  const [challengeCount, setChallengeCount] = useState(0);
-  const [challengeCountMax, setChallengeCountMax] = useState(0);
-  const [challengeStart, setChallengeStart] = useState(false);
+  const { user, userDetail } = useSelector((state) => state);
 
   const [loading, setLoading] = useState(false);
 
@@ -33,31 +32,22 @@ function Challenge() {
     </Grid>
   ));
 
-  useEffect(() => {
-    if (!user.currentUser) return;
-    async function getChallengInfo() {
-      const snapShot = await get(child(ref(getDatabase()), 'users/' + user.currentUser.uid));
-      const challenge = snapShot.val().eventChallenge;
-      setChallengeCount(challenge.count);
-      setChallengeCountMax(challenge.countMax);
-      setChallengeStart(challenge.start);
-    }
-    getChallengInfo();
-  }, [user.currentUser]);
-
   const handleClick = useCallback(async () => {
     setLoading(true);
-
     const updates = {};
-    updates['/users/' + user.currentUser.uid + '/eventChallenge/count'] = challengeCount - 1;
+    updates['/users/' + user.currentUser.uid + '/eventChallenge/count'] =
+      userDetail.currentUserDetail.eventChallenge.count - 1;
     updates['/users/' + user.currentUser.uid + '/eventChallenge/start'] = true;
     await update(ref(getDatabase()), updates);
 
-    setChallengeCount(challengeCount - 1);
-    setChallengeStart(true);
-  }, [user.currentUser.uid, challengeCount]);
+    dispatch(
+      setUserDetail({
+        eventChallenge: { count: userDetail.currentUserDetail.eventChallenge.count - 1, start: true },
+      }),
+    );
+  }, [dispatch, user.currentUser.uid, userDetail.currentUserDetail.eventChallenge.count]);
 
-  if (challengeStart === true) {
+  if (userDetail.currentUserDetail.eventChallenge.start === true) {
     return (
       <Container component="main">
         <Box sx={{ display: 'flex', backgroundColor: 'white' }}>
@@ -109,10 +99,11 @@ function Challenge() {
           size="large"
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          disabled={challengeCount === 0}
+          disabled={userDetail.currentUserDetail.eventChallenge.count === 0}
           loading={loading}
         >
-          도전 시작( {challengeCount}/{challengeCountMax} )
+          도전 시작( {userDetail.currentUserDetail.eventChallenge.count}/
+          {userDetail.currentUserDetail.eventChallenge.countMax} )
         </LoadingButton>
       </Box>
     </Container>
