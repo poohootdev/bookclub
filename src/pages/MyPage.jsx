@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingButton } from '@mui/lab';
 import { Stack, IconButton, Box, Container, Grid, Avatar, Typography } from '@mui/material';
+import Badge from '@mui/material/Badge';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import '../firebase';
 import { signOut, getAuth } from 'firebase/auth';
 import ProfileModal from '../components/modal/ProfileModal';
@@ -50,7 +52,12 @@ function MyPage() {
           내 정보
         </Typography>
         <IconButton onClick={handleClickOpen} color="primary">
-          <Avatar sx={{ width: 150, height: 150 }} alt="profileImage" src={user.currentUser?.photoURL} />
+          <Badge
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            badgeContent={<PhotoCameraIcon sx={{ width: 50, height: 50 }} />}
+          >
+            <Avatar sx={{ width: 150, height: 150 }} alt="profileImage" src={user.currentUser?.photoURL} />
+          </Badge>
         </IconButton>
       </Stack>
       <Container component="main" maxWidth="xs">
