@@ -1,17 +1,33 @@
 import { useState, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AvatarEditor from 'react-avatar-editor';
 import { Alert, Stack, Typography, Box, Container, TextField, Input } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import '../firebase';
+import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
+import { set, push, ref, getDatabase, serverTimestamp } from 'firebase/database';
+import { v4 as uuidv4 } from 'uuid';
 
 function ChallengeInsert() {
-  const [previewImage, setPreviewImage] = useState('');
-  const [error, setError] = useState('');
+  const { user } = useSelector((state) => state);
+  const navigate = useNavigate();
 
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const [previewImage, setPreviewImage] = useState('');
+  const [blob, setBolb] = useState('');
   const avatarEditorRef = useRef(null);
+
+  const handleCropImage = useCallback(() => {
+    avatarEditorRef.current.getImageScaledToCanvas().toBlob((blob) => {
+      setBolb(blob);
+    });
+  }, []);
 
   const handleChange = useCallback((e) => {
     const file = e.target.files[0];
@@ -23,25 +39,56 @@ function ChallengeInsert() {
     });
   }, []);
 
-  const handleSubmit = useCallback((event) => {
-    event.preventDefault();
+  const postChallengeData = useCallback(
+    async (description) => {
+      if (!user.currentUser?.uid) return;
 
-    const data = new FormData(event.currentTarget);
-    const image = data.get('image').name;
-    const description = data.get('description');
+      setLoading(true);
 
-    if (!image) {
-      setError('사진을 추가해 주세요.');
-      return;
-    }
+      try {
+        const storageRef = refStorage(getStorage(), `challenges/${uuidv4()}`);
+        const uploadTask = await uploadBytes(storageRef, blob);
+        const downloadUrl = await getDownloadURL(uploadTask.ref);
 
-    if (!description) {
-      setError('설명을 입력해 주세요.');
-      return;
-    }
+        await set(push(ref(getDatabase(), 'challenges/')), {
+          uid: user.currentUser.uid,
+          image: downloadUrl,
+          description: description,
+          timestamp: serverTimestamp(),
+        });
 
-    setError('');
-  }, []);
+        navigate('/challenge');
+      } catch (e) {
+        setError(e.message);
+        setLoading(false);
+      }
+    },
+    [user.currentUser.uid, blob, navigate],
+  );
+
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      const data = new FormData(event.currentTarget);
+      const image = data.get('image').name;
+      const description = data.get('description');
+
+      if (!image) {
+        setError('사진을 추가해 주세요.');
+        return;
+      }
+
+      if (!description) {
+        setError('설명을 입력해 주세요.');
+        return;
+      }
+
+      setError('');
+      postChallengeData(description);
+    },
+    [postChallengeData],
+  );
 
   return (
     <>
@@ -74,6 +121,8 @@ function ChallengeInsert() {
                 border={0}
                 scale={1}
                 style={{ display: 'inline' }}
+                onImageReady={handleCropImage}
+                onPositionChange={handleCropImage}
               />
             )}
           </div>
@@ -93,7 +142,14 @@ function ChallengeInsert() {
               {error}
             </Alert>
           ) : null}
-          <LoadingButton type="submit" fullWidth size="large" variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <LoadingButton
+            type="submit"
+            fullWidth
+            size="large"
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            loading={loading}
+          >
             등록하기
           </LoadingButton>
         </Box>
