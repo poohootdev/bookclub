@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -8,8 +9,23 @@ import ChallengesListItem from '../components/ChallengesListItem';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import '../firebase';
+import { get, child, ref, getDatabase } from 'firebase/database';
 
 function Challenge() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      const snapShot = await get(child(ref(getDatabase()), 'challenges'));
+      setData(snapShot.val() ? Object.values(snapShot.val()) : []);
+    }
+    getData();
+    return () => {
+      setData([]);
+    };
+  }, []);
+
   return (
     <>
       <Container component="main" maxWidth="xs">
@@ -38,14 +54,9 @@ function Challenge() {
               </Typography>
             </CardContent>
           </Card>
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
-          <ChallengesListItem />
+          {data.map((item) => (
+            <ChallengesListItem key={item.timestamp} />
+          ))}
         </Box>
       </Container>
       <Link to="/challengeinsert">
