@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Container, Box, Grid } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -58,9 +59,11 @@ function Challenge() {
             {itemsList}
           </Grid>
         </Box>
-        <Fab color="primary" aria-label="add" sx={{ position: 'absolute', bottom: 20, right: 20 }}>
-          <AddIcon />
-        </Fab>
+        <Link to="/challengeinsert">
+          <Fab color="primary" aria-label="add" sx={{ position: 'absolute', bottom: 20, right: 20 }}>
+            <AddIcon />
+          </Fab>
+        </Link>
       </Container>
     );
   }

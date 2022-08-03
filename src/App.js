@@ -8,6 +8,7 @@ import Main from './pages/Main';
 import Login from './pages/Login';
 import Join from './pages/Join';
 import Challenge from './pages/Challenge';
+import ChallengeInsert from './pages/ChallengeInsert';
 import MyPage from './pages/MyPage';
 import { CircularProgress, Stack } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -82,6 +83,7 @@ function App() {
         <Route path="/" element={currentUser ? <Main /> : <Navigate to="/login" />}></Route>
         <Route path="/mypage" element={currentUser ? <MyPage /> : <Navigate to="/login" />}></Route>
         <Route path="/challenge" element={currentUser ? <Challenge /> : <Navigate to="/login" />}></Route>
+        <Route path="/challengeinsert" element={currentUser ? <ChallengeInsert /> : <Navigate to="/login" />}></Route>
       </Routes>
     </ThemeProvider>
   );
