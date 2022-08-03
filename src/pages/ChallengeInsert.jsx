@@ -2,11 +2,15 @@ import { useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AvatarEditor from 'react-avatar-editor';
-import { Stack, Typography, Box, Container, TextField, Input } from '@mui/material';
+import { Alert, Stack, Typography, Box, Container, TextField, Input } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 function ChallengeInsert() {
   const [previewImage, setPreviewImage] = useState('');
+  const [error, setError] = useState('');
+
   const avatarEditorRef = useRef(null);
 
   const handleChange = useCallback((e) => {
@@ -17,6 +21,26 @@ function ChallengeInsert() {
     reader.addEventListener('load', () => {
       setPreviewImage(reader.result);
     });
+  }, []);
+
+  const handleSubmit = useCallback((event) => {
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+    const image = data.get('image').name;
+    const description = data.get('description');
+
+    if (!image) {
+      setError('사진을 추가해 주세요.');
+      return;
+    }
+
+    if (!description) {
+      setError('설명을 입력해 주세요.');
+      return;
+    }
+
+    setError('');
   }, []);
 
   return (
@@ -30,8 +54,10 @@ function ChallengeInsert() {
         </Typography>
       </Stack>
       <Container component="main" maxWidth="xs">
-        <Box sx={{ mt: 5 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 5 }}>
+          <AddAPhotoIcon color="primary" sx={{ width: 40, height: 40 }} />
           <Input
+            name="image"
             type="file"
             fullWidth
             onChange={handleChange}
@@ -51,8 +77,9 @@ function ChallengeInsert() {
               />
             )}
           </div>
+
+          <AutoStoriesIcon color="primary" sx={{ width: 40, height: 40, mt: 3 }} />
           <TextField
-            sx={{ mt: 3 }}
             name="description"
             required
             fullWidth
@@ -61,7 +88,12 @@ function ChallengeInsert() {
             rows={4}
             placeholder="남기고 싶은 스토리를 입력하세요."
           />
-          <LoadingButton fullWidth size="large" variant="contained" sx={{ mt: 7, mb: 2 }}>
+          {error ? (
+            <Alert sx={{ mt: 3 }} severity="error">
+              {error}
+            </Alert>
+          ) : null}
+          <LoadingButton type="submit" fullWidth size="large" variant="contained" sx={{ mt: 3, mb: 2 }}>
             등록하기
           </LoadingButton>
         </Box>
