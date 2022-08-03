@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -5,27 +6,50 @@ import CardContent from '@mui/material/CardContent';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import PropTypes from 'prop-types';
 
-function Read100ListItem() {
+function ChallengesListItem({ uid, timestamp, image, description }) {
+  const { user } = useSelector((state) => state);
+
+  /*eslint no-undef: "error"*/
+  const relativeTime = require('dayjs/plugin/relativeTime');
+  dayjs.extend(relativeTime);
+  dayjs.locale('ko');
+
+  const displayDate = dayjs(timestamp).fromNow() + ' | ' + dayjs(timestamp).format('YYYY/MM/DD');
+
   return (
     <Card sx={{ maxWidth: 400, mb: 4 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
+          user.currentUser.uid === uid ? (
+            <Avatar src={user.currentUser?.photoURL} />
+          ) : (
+            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+              R
+            </Avatar>
+          )
         }
-        title="닉네임"
-        subheader="2022-07-24"
+        title={user.currentUser.uid === uid ? user.currentUser.displayName : uid}
+        subheader={displayDate}
       />
-      <CardMedia component="img" height="194" image="https://picsum.photos/400/400/?random" alt="Paella dish" />
+      <CardMedia component="img" height="400" image={image} alt="Paella dish" />
       <CardContent>
         <Typography variant="body2" color="secondary">
-          이제 시작이에요~ ^^
+          {description}
         </Typography>
       </CardContent>
     </Card>
   );
 }
 
-export default Read100ListItem;
+ChallengesListItem.propTypes = {
+  uid: PropTypes.string,
+  timestamp: PropTypes.number,
+  image: PropTypes.string,
+  description: PropTypes.string,
+};
+
+export default ChallengesListItem;

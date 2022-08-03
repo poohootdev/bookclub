@@ -55,7 +55,13 @@ function Challenge() {
             </CardContent>
           </Card>
           {data.map((item) => (
-            <ChallengesListItem key={item.timestamp} />
+            <ChallengesListItem
+              key={item.timestamp}
+              uid={item.uid}
+              timestamp={item.timestamp}
+              image={item.image}
+              description={item.description}
+            />
           ))}
         </Box>
       </Container>
