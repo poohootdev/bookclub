@@ -18,7 +18,9 @@ function Challenge() {
   useEffect(() => {
     async function getData() {
       const snapShot = await get(child(ref(getDatabase()), 'challenges'));
-      setData(snapShot.val() ? Object.values(snapShot.val()) : []);
+      const ary = snapShot.val() ? Object.values(snapShot.val()) : [];
+      ary.reverse();
+      setData(ary);
     }
     getData();
     return () => {
